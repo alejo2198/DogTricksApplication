@@ -1,0 +1,33 @@
+﻿@model DogTricksApplication.Models.TrickDto
+@{
+    ViewBag.Title = "Update";
+}
+
+
+
+<h2>Update Trick: @Model.TrickName</h2>
+
+<form action="/Trick/Edit" method="post">
+    <div>
+        <label>Id:</label>
+        <input type="text" name="TrickId" value="@Model.TrickId" />
+    </div>
+    <div>
+        <label>Name:</label>
+        <input type="text" name="TrickName" value="@Model.TrickName" />
+    </div>
+    <div>
+        <label>Description</label>
+        <input type="text" name="TrickDescription" value="@Model.TrickDescription" />
+    </div>
+    <div>
+        <label>Difficulty:</label>
+        <input type="text" name="TrickDifficulty" value="@Model.TrickDifficulty" />
+    </div>
+    <div>
+        <label>Video Link::</label>
+        <input type="text" name="TrickVideoLink" value="@Model.TrickVideoLink" />
+    </div>
+  
+    <input type="submit" value="Update Trick" />
+</form>

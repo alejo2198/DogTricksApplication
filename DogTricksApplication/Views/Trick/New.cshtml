@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Add a Trick</h2>
+<form action="/Trick/Create" method="post">
+    <div>
+        <label>Name:</label>
+        <input type="text" name="TrickName" />
+    </div>
+    <div>
+        <label>Description</label>
+        <input type="text" name="TrickDescription" />
+    </div>
+    <div>
+        <label>Difficulty</label>
+        <input type="text" name="TrickDifficulty" />
+    </div>
+    <div>
+        <label>Video Link:</label>
+        <input type="text" name="TrickVideoLink" />
+    </div>
+    
+    <input type="submit" value="Add a trick" />
+</form>
+

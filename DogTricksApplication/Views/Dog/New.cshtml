@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Add your Pup</h2>
+<form action="/Dog/Create" method="post">
+    <div>
+        <label>Name:</label>
+        <input type="text" name="DogName" />
+    </div>
+    <div>
+        <label>Age (years):</label>
+        <input type="number" name="DogAge" />
+    </div>
+    <div>
+        <label>Breed:</label>
+        <input type="text" name="DogBreed" />
+    </div>
+    <div>
+        <label>Birthday:</label>
+        <input type="date" name="DogBirthday" />
+    </div>
+    <div>
+        <label>Owner:</label>
+        <input type="text" name="DogOwner" value="719c2659-8537-4357-af26-93cf3ec55f10" />
+    </div>
+    <input type="submit" value="Add your Pup" />
+</form>
+

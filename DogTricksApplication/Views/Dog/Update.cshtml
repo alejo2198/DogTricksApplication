@@ -1,0 +1,53 @@
+﻿@model DogTricksApplication.Models.DogDto
+@{
+    ViewBag.Title = "Update";
+}
+
+@{
+    var day = Model.DogBirthday.Day;
+    var stringDay = day.ToString();
+    if (day < 10)
+    {
+        stringDay = "0" + day.ToString();
+    }
+
+    var month = Model.DogBirthday.Month;
+    var stringMonth = month.ToString();
+    if (month < 10)
+    {
+        stringMonth = "0" + month.ToString();
+    }
+    //This date format is accepted as a value in the date input
+    var FormattedDate = Model.DogBirthday.Year.ToString() + "-" + stringMonth + "-" + stringDay;
+
+}
+
+<h2>Update Your Pup</h2>
+
+<form action="/Dog/Edit" method="post">
+    <div>
+        <label>Id:</label>
+        <input type="text" name="DogId" value="@Model.DogId" />
+    </div>
+    <div>
+        <label>Name:</label>
+        <input type="text" name="DogName" value="@Model.DogName" />
+    </div>
+    <div>
+        <label>Age (years):</label>
+        <input type="number" name="DogAge" value="@Model.DogAge" />
+    </div>
+    <div>
+        <label>Breed:</label>
+        <input type="text" name="DogBreed" value="@Model.DogBreed" />
+    </div>
+    <div>
+        <label>Birthday:</label>
+        <input type="date" name="DogBirthday" value="@FormattedDate" />
+    </div>
+    <div>
+        <label>Owner:</label>
+        <input type="text" name="DogOwner" value="719c2659-8537-4357-af26-93cf3ec55f10" />
+    </div>
+    <input type="submit" value="Update your Pup" />
+</form>
