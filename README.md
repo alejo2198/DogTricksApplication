@@ -1,6 +1,6 @@
 # Dogs Journey
 
-This application is for Dog lovers. If you want to keep track of the tricks your pup has learnt. You came to the right place.
+This application is for Dog lovers. If you want to keep track of the tricks your pup has learned. You came to the right place.
 
 # Running this project 
 - Project > DogTricksApplication Properties > Change target framework to 4.7.1 -> Change back to 4.7.2
@@ -12,10 +12,10 @@ This application is for Dog lovers. If you want to keep track of the tricks your
 # Functionality
 ## Dog
 - Full Crud operations for dogs
-- track your dogs name, breed,birthday, age
-- add tricks they learnt at the form on their profile
+- track your dogs' name, breed,birthday, age
+- add tricks they learned at the form on their profile
 
-- ## Trick
+## Trick
 - Full Crud operations for tricks
-- you can see all the tricks in the tricks catalogue, don't see one you like? You can add one by pasting a youtube link in the Trick/New page.
+- you can see all the tricks in the tricks catalog, don't see one you like? You can add one by pasting a YouTube link in the Trick/New page.
 
