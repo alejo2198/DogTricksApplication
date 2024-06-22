@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using DogTricksApplication.Models;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
+using System.Web.Routing;
 
 namespace DogTricksApplication.Controllers
 {
@@ -18,14 +19,34 @@ namespace DogTricksApplication.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/DogxTrickData/ListDogxTricks
+        /// <summary>
+        /// Returns all dogsxTricks in the system.
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: all dogsxTricks in the database,
+        /// </returns>
+        /// <example>
+        ///GET: api/DogxTrickData/ListDogxTricks
+        /// </example>
+        
         [HttpGet]
         public IEnumerable<DogxTrick> ListDogxTricks()
         {
             return db.DogxTricks.ToList();
         }
 
-        // GET: api/DogxTrickData/ListDogxTricksforDog/id
+
+        /// <summary>
+        /// lists all dog tricks per dog
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: all dogtricks per dog
+        /// </returns>
+        /// <example>
+        ///GET: api/DogxTrickData/ListDogxTricksforDog/id
+        /// </example>
         [HttpGet]
         public IEnumerable<DogxTrickDto> ListDogxTricksforDog(int id)
         {
@@ -42,7 +63,17 @@ namespace DogTricksApplication.Controllers
             return DogTrickDtos;
         }
 
-        // GET: api/DogxTrickData/ListDogxTricksforTricks/9
+        /// <summary>
+        /// lists all dog tricks per trick
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: all dogtricks per trick
+        /// </returns>
+        /// <example>
+        ///GET: api/DogxTrickData/ListDogxTricksforTricks/9
+        /// </example>
+
         [HttpGet]
         public IEnumerable<DogxTrickDto> ListDogxTricksforTricks(int id)
         {
@@ -59,10 +90,19 @@ namespace DogTricksApplication.Controllers
             return DogTrickDtos;
         }
 
- 
 
+        /// <summary>
+        /// finds one dogxtrick by id
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one dogxtrick
+        /// </returns>
+        /// <example>
+        ///GET: api/DogxTrickData/FIndDogxTrick/5
+        /// </example>
         [HttpGet]
-        // GET: api/DogxTrickData/FIndDogxTrick/5
+        
         [ResponseType(typeof(DogxTrick))]
         public IHttpActionResult FindDogxTrick(int id)
         {
@@ -75,7 +115,17 @@ namespace DogTricksApplication.Controllers
             return Ok(dogxTrick);
         }
 
-        // PUT: api/DogxTrickData/UpdateDogxTrick/5
+        /// <summary>
+        /// updates one dogxtrick by id
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one dogxtrick
+        /// </returns>
+        /// <example>
+        ///PUT: api/DogxTrickData/UpdateDogxTrick/5
+        /// </example>
+
         [ResponseType(typeof(void))]
         public IHttpActionResult UpdateDogxTrick(int id, DogxTrick dogxTrick)
         {
@@ -109,23 +159,74 @@ namespace DogTricksApplication.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
-        
-        // POST: api/DogxTrickData/AddDogxTrick
+
+        /// <summary>
+        /// adds one dogxtrick to database
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one dogxtrick
+        /// </returns>
+        /// <example>
+        /// POST: api/DogxTrickData/AddDogxTrick
+        /// </example>
+
         [ResponseType(typeof(DogxTrick))]
+        [HttpPost]
         public IHttpActionResult AddDogxTrick(DogxTrick dogxTrick)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-           db.DogxTricks.Add(dogxTrick);
+            db.DogxTricks.Add(dogxTrick);
             db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = dogxTrick.DogTrickId }, dogxTrick);
+           return CreatedAtRoute("DefaultApi", new { id = dogxTrick.DogTrickId }, dogxTrick);
         }
 
-        // DELETE: api/DogxTrickData/DeleteDogxTrick/5
+
+        /// <summary>
+        ///grabs the latest dogxtrick and attaches it to the dog by id and the trick by id. 
+        ///Completes the bridge tables
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one dogxtrick,one dog,one trick
+        /// </returns>
+        /// <example>
+        /// POST: api/DogxTrickData/connecttricktodog/{DogId}/{TrickId}
+        /// </example>
+
+        [HttpPost]
+        [Route("api/dogxtrickdata/connecttricktodog/{DogId}/{TrickId}")]
+
+        public IHttpActionResult ConnectTricktoDog(int DogId, int TrickId)
+        {
+            DogxTrick lastdogtrick = db.DogxTricks.OrderByDescending(u => u.DogTrickId).FirstOrDefault();
+            
+            Dog selectedDog = db.Dogs.Include(dog => dog.Tricks).Where(d => d.DogId == DogId).FirstOrDefault();
+            selectedDog.Tricks.Add(lastdogtrick);
+
+            Trick selectedTrick = db.Tricks.Include(trick => trick.Dogs).Where(t => t.TrickId == TrickId).FirstOrDefault();
+            selectedTrick.Dogs.Add(lastdogtrick);
+
+            db.SaveChanges();
+            return Ok();
+        }
+
+
+        /// <summary>
+        ///deletes dogxtrick by id
+        ///Completes the bridge tables
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one dogxtrick
+        /// </returns>
+        /// <example>
+        /// DELETE: api/DogxTrickData/DeleteDogxTrick/5
+        /// </example>
+       
         [ResponseType(typeof(DogxTrick))]
         public IHttpActionResult DeleteDogxTrick(int id)
         {

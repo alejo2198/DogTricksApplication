@@ -8,6 +8,8 @@ using DogTricksApplication.Models;
 using DogTricksApplication.Models.ViewModels;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
+using System.Security.Policy;
+using System.Web.UI.WebControls;
 
 namespace DogTricksApplication.Controllers
 {
@@ -21,6 +23,7 @@ namespace DogTricksApplication.Controllers
             client = new HttpClient();
             client.BaseAddress = new Uri("https://localhost:44366/api/");
         }
+
         // GET: Dog/List
         public ActionResult List()
         {
@@ -76,14 +79,35 @@ namespace DogTricksApplication.Controllers
         {
 
             string url = "dogxtrickdata/adddogxtrick";
-            Debug.WriteLine(dogxTrick);
             string jsonpayload = jss.Serialize(dogxTrick);
-            Debug.WriteLine(jsonpayload);
 
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
             HttpResponseMessage response = client.PostAsync(url, content).Result;
 
+            if (response.IsSuccessStatusCode)
+            {
+                 url = "dogxtrickdata/connecttricktodog/" + DogId + "/" + TrickId;
+                content = new StringContent("");
+                response = client.PostAsync(url,content).Result;
+                Debug.WriteLine(url);
+                Debug.WriteLine(response);
+
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ConnectTrickToDog(int DogId, int TrickId)
+        {
+            string url = "dogxtrickdata/connecttricktodog/" + DogId + "/" + TrickId;
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("List");

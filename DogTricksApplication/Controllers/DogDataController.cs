@@ -17,7 +17,17 @@ namespace DogDogsApplication.Controllers
           
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/DogData/ListDogs
+        
+        /// <summary>
+        /// Returns all dogs in the system.
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: all dogs in the database,
+        /// </returns>
+        /// <example>
+        /// GET: api/DogData/ListDogs
+        /// </example>
         [HttpGet]
         public IEnumerable<DogDto> ListDogs()
         {
@@ -36,7 +46,17 @@ namespace DogDogsApplication.Controllers
             return DogDtos;
         }
 
-        // GET: api/DogData/FindDog/5
+        /// <summary>
+        /// Returns one dog in the system by id.
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: one dog in the database,
+        /// </returns>
+        /// <example>
+        /// GET: api/DogData/FindDog/5
+        /// </example>
+       
         [ResponseType(typeof(Dog))]
         [HttpGet]
         public IHttpActionResult FindDog(int id)
@@ -57,8 +77,17 @@ namespace DogDogsApplication.Controllers
             };
             return Ok(DogDto);
         }
-
-        // PUT: api/DogData/UpdateDog/5
+        /// <summary>
+        ///updatesone dog in the system by id.
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: update one dog in the database,
+        /// </returns>
+        /// <example>
+        /// PUT: api/DogData/UpdateDog/5
+        /// </example>
+       
         [ResponseType(typeof(void))]
         [HttpPost]
         public IHttpActionResult UpdateDog(int id, Dog dog)
@@ -94,7 +123,17 @@ namespace DogDogsApplication.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/DogData/AddDog
+        /// <summary>
+        ///add one dog in the system
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: add one dog in the database,
+        /// </returns>
+        /// <example>
+        ///POST: api/DogData/AddDog
+        /// </example>
+
         [ResponseType(typeof(Dog))]
         [HttpPost]
         public IHttpActionResult AddDog(Dog dog)
@@ -109,8 +148,17 @@ namespace DogDogsApplication.Controllers
 
             return CreatedAtRoute("DefaultApi", new { id = dog.DogId }, dog);
         }
-
-        // DELETE: api/DogData/DeleteDog/5
+        /// <summary>
+        ///delete one dog in the system
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT: delete one dog in the database,
+        /// </returns>
+        /// <example>
+        ///DELETE: api/DogData/DeleteDog/5
+        /// </example>
+        
         [ResponseType(typeof(Dog))]
         [HttpPost]
         public IHttpActionResult DeleteDog(int id)

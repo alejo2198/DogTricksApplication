@@ -17,7 +17,19 @@ namespace DogTricksApplication.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/TrickData/ListTricks
+
+        /// <summary>
+        ///grabs all tricks in the database
+
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:all tricks
+        /// </returns>
+        /// <example>
+        /// GET: api/TrickData/ListTricks
+        /// </example>
+
         [HttpGet]
         public IEnumerable<TrickDto> ListTricks()
         {
@@ -35,9 +47,18 @@ namespace DogTricksApplication.Controllers
             return TrickDtos;
         }
 
-    
 
-        // GET: api/TrickData/FindTrick/5
+        /// <summary>
+        ///grabs one trick by id  in the database
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one trick
+        /// </returns>
+        /// <example>
+        /// GET: api/TrickData/FindTrick/5
+        /// </example>
+
         [ResponseType(typeof(Trick))]
         [HttpGet]
         public IHttpActionResult FindTrick(int id)
@@ -58,9 +79,18 @@ namespace DogTricksApplication.Controllers
 
             return Ok(TrickDto);
         }
-  
 
-        // GET: api/TrickData/ ListTricksforDog/9
+        /// <summary>
+        ///grabs onedogxtrick per trick
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one dogxtrick
+        /// </returns>
+        /// <example>
+        /// GET: api/TrickData/ ListTricksforDog/9
+        /// </example>
+        
         [HttpGet]
         public TrickDto ListTricksforDog(int id)
         {
@@ -80,7 +110,17 @@ namespace DogTricksApplication.Controllers
             return TrickDtos.First();
         }
 
-        // PUT: api/TrickData/UpdateTrick/5
+        /// <summary>
+        ///updates oner trick
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one trick
+        /// </returns>
+        /// <example>
+        /// PUT: api/TrickData/UpdateTrick/5
+        /// </example>
+       
         [ResponseType(typeof(void))]
         [HttpPost]
         public IHttpActionResult UpdateTrick(int id, Trick trick)
@@ -116,7 +156,17 @@ namespace DogTricksApplication.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/TrickData/AddTrick
+        /// <summary>
+        ///adds ones trick
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one trick
+        /// </returns>
+        /// <example>
+        /// POST: api/TrickData/AddTrick
+        /// </example>
+      
         [ResponseType(typeof(Trick))]
         [HttpPost]
         public IHttpActionResult AddTrick(Trick trick)
@@ -132,7 +182,19 @@ namespace DogTricksApplication.Controllers
             return CreatedAtRoute("DefaultApi", new { id = trick.TrickId }, trick);
         }
 
-        // DELETE: api/TrickData/DeleteTrick
+
+
+        /// <summary>
+        ///adds ones trick
+        /// </summary>
+        /// <returns>
+        /// HEADER: 200 (OK)
+        /// CONTENT:one trick
+        /// </returns>
+        /// <example>
+        ///  DELETE: api/TrickData/DeleteTrick
+        /// </example>
+        
         [ResponseType(typeof(Trick))]
         [HttpPost]
         public IHttpActionResult DeleteTrick(int id)
