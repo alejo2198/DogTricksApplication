@@ -14,7 +14,7 @@ namespace DogTricksApplication.Models
         public string DogName { get; set; }
         public int DogAge { get; set; }
         public string DogBreed { get; set; }
-        public DateTime  DogBirthday { get; set; }
+        public DateTime DogBirthday { get; set; }
 
         //a dog belongs to one user
         //a user can have many dogs(one for this MVP)

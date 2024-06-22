@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DogTricksApplication.Models;
+using System.Diagnostics;
+using System.Web.Script.Serialization;
 
 namespace DogTricksApplication.Controllers
 {
@@ -16,15 +18,53 @@ namespace DogTricksApplication.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/DogxTrickData
-        public IQueryable<DogxTrick> GetDogxTricks()
+        // GET: api/DogxTrickData/ListDogxTricks
+        [HttpGet]
+        public IEnumerable<DogxTrick> ListDogxTricks()
         {
-            return db.DogxTricks;
+            return db.DogxTricks.ToList();
         }
 
-        // GET: api/DogxTrickData/5
+        // GET: api/DogxTrickData/ListDogxTricksforDog/id
+        [HttpGet]
+        public IEnumerable<DogxTrickDto> ListDogxTricksforDog(int id)
+        {
+            //all dogs that have dogtricks that match with our id
+            List<DogxTrick> DogxTricks = db.DogxTricks.Where(dogtrick => dogtrick.Dogs.Any(dog=> dog.DogId == id)).ToList();
+
+            List<DogxTrickDto> DogTrickDtos = new List<DogxTrickDto>();
+            DogxTricks.ForEach(dogtrick => DogTrickDtos.Add(new DogxTrickDto()
+            {
+                DogTrickId = dogtrick.DogTrickId,
+                DogTrickDate = dogtrick.DogTrickDate
+            }));
+            
+            return DogTrickDtos;
+        }
+
+        // GET: api/DogxTrickData/ListDogxTricksforTricks/9
+        [HttpGet]
+        public IEnumerable<DogxTrickDto> ListDogxTricksforTricks(int id)
+        {
+            //all dogs that have dogtricks that match with our id
+            List<DogxTrick> DogxTricks = db.DogxTricks.Where(dogtrick => dogtrick.Tricks.Any(trick => trick.TrickId == id)).ToList();
+            List<DogxTrickDto> DogTrickDtos = new List<DogxTrickDto>();
+
+            DogxTricks.ForEach(dogtrick => DogTrickDtos.Add(new DogxTrickDto()
+            {
+                DogTrickId = dogtrick.DogTrickId,
+                DogTrickDate = dogtrick.DogTrickDate
+            }));
+
+            return DogTrickDtos;
+        }
+
+ 
+
+        [HttpGet]
+        // GET: api/DogxTrickData/FIndDogxTrick/5
         [ResponseType(typeof(DogxTrick))]
-        public IHttpActionResult GetDogxTrick(int id)
+        public IHttpActionResult FindDogxTrick(int id)
         {
             DogxTrick dogxTrick = db.DogxTricks.Find(id);
             if (dogxTrick == null)
@@ -35,9 +75,9 @@ namespace DogTricksApplication.Controllers
             return Ok(dogxTrick);
         }
 
-        // PUT: api/DogxTrickData/5
+        // PUT: api/DogxTrickData/UpdateDogxTrick/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutDogxTrick(int id, DogxTrick dogxTrick)
+        public IHttpActionResult UpdateDogxTrick(int id, DogxTrick dogxTrick)
         {
             if (!ModelState.IsValid)
             {
@@ -69,23 +109,23 @@ namespace DogTricksApplication.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
-
-        // POST: api/DogxTrickData
+        
+        // POST: api/DogxTrickData/AddDogxTrick
         [ResponseType(typeof(DogxTrick))]
-        public IHttpActionResult PostDogxTrick(DogxTrick dogxTrick)
+        public IHttpActionResult AddDogxTrick(DogxTrick dogxTrick)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.DogxTricks.Add(dogxTrick);
+           db.DogxTricks.Add(dogxTrick);
             db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = dogxTrick.DogTrickId }, dogxTrick);
         }
 
-        // DELETE: api/DogxTrickData/5
+        // DELETE: api/DogxTrickData/DeleteDogxTrick/5
         [ResponseType(typeof(DogxTrick))]
         public IHttpActionResult DeleteDogxTrick(int id)
         {

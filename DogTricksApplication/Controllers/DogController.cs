@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Net.Http;
 using DogTricksApplication.Models;
+using DogTricksApplication.Models.ViewModels;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
 
@@ -18,7 +19,7 @@ namespace DogTricksApplication.Controllers
         static DogController()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44366/api/dogdata/");
+            client.BaseAddress = new Uri("https://localhost:44366/api/");
         }
         // GET: Dog/List
         public ActionResult List()
@@ -26,7 +27,7 @@ namespace DogTricksApplication.Controllers
             //communicate with our Dogdata api to retrieve list of dogs
             //curl https://localhost:44366/api/dogdata/listdogs
 
-            string url = "listdogs";
+            string url = "dogdata/listdogs";
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             IEnumerable<DogDto> dogs = response.Content.ReadAsAsync< IEnumerable<DogDto>>().Result;
@@ -37,14 +38,60 @@ namespace DogTricksApplication.Controllers
         // GET: Dog/Details/5
         public ActionResult Details(int id)
         {
-            //communicate with our Dogdata api to retrieve a dog by id
+            //communicate with our Dogdata api to retrieve a dog by id, be able to add a trick to a dog
             //curl https://localhost:44366/api/dogdata/finddog/9
 
-            string url = "finddog/"+id;
+            TeachDogATrick ViewModel = new TeachDogATrick();
+
+            string url = "dogdata/finddog/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             DogDto selectedDog = response.Content.ReadAsAsync<DogDto>().Result;
+            ViewModel.SelectedDog = selectedDog;
 
-            return View(selectedDog);
+            url = "trickdata/listtricks";
+             response = client.GetAsync(url).Result;
+            IEnumerable<TrickDto> tricks = response.Content.ReadAsAsync<IEnumerable<TrickDto>>().Result;
+            ViewModel.TrickOptions = tricks;
+
+            url = "DogxTrickData/ListDogxTricksforDog/" + id; 
+            response = client.GetAsync(url).Result;
+            IEnumerable<DogxTrickDto> tricksfordog = response.Content.ReadAsAsync<IEnumerable<DogxTrickDto>>().Result;
+
+           List <TrickDto> tricksLearnt = new List<TrickDto>();
+            tricksfordog.ToList().ForEach(trickLearnt =>
+            { 
+            url = "trickdata/ListTricksforDog/" + trickLearnt.DogTrickId;
+                response = client.GetAsync(url).Result;
+            TrickDto selectedTrick = response.Content.ReadAsAsync<TrickDto>().Result; 
+            tricksLearnt.Add(selectedTrick);
+        });
+            
+            ViewModel.TricksLearnt = tricksLearnt;
+
+            return View(ViewModel);
+        }
+
+        [HttpPost]
+        public ActionResult LearnTrick(int DogId, int TrickId, DogxTrick dogxTrick)
+        {
+
+            string url = "dogxtrickdata/adddogxtrick";
+            Debug.WriteLine(dogxTrick);
+            string jsonpayload = jss.Serialize(dogxTrick);
+            Debug.WriteLine(jsonpayload);
+
+            HttpContent content = new StringContent(jsonpayload);
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         [HttpGet]
@@ -62,7 +109,7 @@ namespace DogTricksApplication.Controllers
             //communicate with our Dogdata api to add a dog
             //curl  -d ""  - "Content-type:application" https://localhost:44366/api/dogdata/AddDog
 
-            string url = "adddog";
+            string url = "dogdata/adddog";
            
             string jsonpayload = jss.Serialize(dog);
 
@@ -79,13 +126,12 @@ namespace DogTricksApplication.Controllers
                 return RedirectToAction("Error");
             }
      
-            
         }
 
         //Get:Dog/Update/5
         public ActionResult Update(int id)
         {
-            string url = "finddog/" + id;
+            string url = "dogdata/finddog/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             DogDto selectedDog = response.Content.ReadAsAsync<DogDto>().Result;
 
@@ -97,7 +143,7 @@ namespace DogTricksApplication.Controllers
         public ActionResult Edit(Dog dog)
         {
             
-            string url = "updatedog/" + dog.DogId;
+            string url = "dogdata/updatedog/" + dog.DogId;
 
             string jsonpayload = jss.Serialize(dog);
 
@@ -121,7 +167,7 @@ namespace DogTricksApplication.Controllers
         [HttpGet]
         public ActionResult DeleteConfirm(int id)
         {
-            string url = "finddog/" + id;
+            string url = "dogdata/finddog/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             DogDto selectedDog = response.Content.ReadAsAsync<DogDto>().Result;
 
@@ -136,7 +182,7 @@ namespace DogTricksApplication.Controllers
             try
             {
                 // TODO: Add delete logic here
-                string url = "deletedog/" + id;
+                string url = "dogdata/deletedog/" + id;
                 HttpContent content = new StringContent("");
                 content.Headers.ContentType.MediaType = "application/json";
                 HttpResponseMessage response = client.PostAsync(url, content).Result;

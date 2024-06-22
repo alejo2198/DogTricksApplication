@@ -1,13 +1,41 @@
-﻿@model DogTricksApplication.Models.DogDto
+﻿@model DogTricksApplication.Models.ViewModels.TeachDogATrick
 @{
     ViewBag.Title = "Details";
 }
-<a href="/Dog/Update/@Model.DogId" class="navbar-link">Update</a>
-<a href="/Dog/DeleteConfirm/@Model.DogId" class="navbar-link">Delete</a>
+<a href="/Dog/Update/@Model.SelectedDog.DogId" class="navbar-link">Update</a>
+<a href="/Dog/DeleteConfirm/@Model.SelectedDog.DogId" class="navbar-link">Delete</a>
 <a href="/Dog/List">Go back to Dog List</a>
-<h2>@Model.DogName</h2>
-<p>Age: @Model.DogAge</p>
-<p>Birthday: @Model.DogBirthday.ToString("MMMM dd, yyyy")</p>
-<p>Breed: @Model.DogBreed</p>
+<h2>@Model.SelectedDog.DogName</h2>
+<p>Age: @Model.SelectedDog.DogAge</p>
+<p>Birthday: @Model.SelectedDog.DogBirthday.ToString("MMMM dd, yyyy")</p>
+<p>Breed: @Model.SelectedDog.DogBreed</p>
+
+<h3>Tricks in @Model.SelectedDog.DogName Wheelhouse. </h3>
+@foreach(var trickLearnt in Model.TricksLearnt)
+            {
+    <div>
+             <a href="/Trick/Details/@trickLearnt.TrickId">@trickLearnt.TrickName</a>
+    </div>
+            }
+
+<h3>Did @Model.SelectedDog.DogName learn a new trick?</h3>
+<p>Add it below</p>
+<form action="/Dog/LearnTrick" method="post">
+    <select name="TrickId">
+        @foreach(var trick in Model.TrickOptions)
+            {
+            <option name="TrickId" value="@trick.TrickId">@trick.TrickName</option>
+
+            }s
+
+    </select>
+        <input type="number" style="display:none" value="@Model.SelectedDog.DogId" name="DogId"/>
+        <div>
+            <label>Date trick was learnt:</label>
+            <input type="date" name="DogTrickDate" />
+        </div>
+    <input type="submit" value="Learn Trick"/>
+</form>
+
 
 

@@ -7,24 +7,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DogTricksApplication.Models
 {
-    public class DogxTrick
+    public class DogTrick
     {
         [Key]
         public int DogTrickId { get; set; }
 
         public DateTime DogTrickDate { get; set; }
 
-        //many dogs can learn many tricks
-        public ICollection<Dog> Dogs { get; set; }
+        [ForeignKey("Dogs")]
+        public int DogId { get; set; }
+        public virtual Dog Dogs { get; set; }
 
-        public ICollection<Trick> Tricks { get; set; }
+        [ForeignKey("Tricks")]
+        public int TrickId { get; set; }
+        public virtual Trick Tricks { get; set; }
 
+   
     }
-
     public class DogxTrickDto
     {
         public int DogTrickId { get; set; }
-
         public DateTime DogTrickDate { get; set; }
     }
 }

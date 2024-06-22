@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,6 +35,8 @@ namespace DogTricksApplication.Controllers
             return TrickDtos;
         }
 
+    
+
         // GET: api/TrickData/FindTrick/5
         [ResponseType(typeof(Trick))]
         [HttpGet]
@@ -54,6 +57,27 @@ namespace DogTricksApplication.Controllers
             };
 
             return Ok(TrickDto);
+        }
+  
+
+        // GET: api/TrickData/ ListTricksforDog/9
+        [HttpGet]
+        public TrickDto ListTricksforDog(int id)
+        {
+            //all dogs that have dogtricks that match with our id
+            List<Trick> tricks = db.Tricks.Where(trick => trick.Dogs.Any(dogtrick => dogtrick.DogTrickId == id)).ToList();
+            List<TrickDto> TrickDtos = new List<TrickDto>();
+
+            tricks.ForEach(trick => TrickDtos.Add(new TrickDto()
+            {
+                TrickId = trick.TrickId,
+                TrickName = trick.TrickName,
+                TrickDescription = trick.TrickDescription,
+                TrickDifficulty = trick.TrickDifficulty,
+                TrickVideoLink = trick.TrickVideoLink
+            }));
+
+            return TrickDtos.First();
         }
 
         // PUT: api/TrickData/UpdateTrick/5
